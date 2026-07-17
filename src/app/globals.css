@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-michroma), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: #14161b;
+    color: #dfe3e9;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgba(191, 220, 245, 0.28);
+    color: #fff;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .bg-chrome-wordmark {
+    background-image: linear-gradient(
+      115deg,
+      #ffffff 0%,
+      #e2e6eb 28%,
+      #fcfdff 46%,
+      #a8afb8 66%,
+      #eef1f5 88%
+    );
+  }
+
+  /* Soft edge falloff — keeps the center bright without looking like a glow effect */
+  .page-vignette {
+    background-color: #0c0e12;
+    background-image:
+      radial-gradient(
+        ellipse 75% 60% at 50% 40%,
+        rgba(52, 58, 70, 0.9) 0%,
+        rgba(32, 36, 46, 0.45) 38%,
+        transparent 68%
+      ),
+      radial-gradient(
+        ellipse 115% 100% at 50% 50%,
+        transparent 28%,
+        rgba(8, 9, 12, 0.65) 62%,
+        rgba(3, 4, 6, 0.96) 100%
+      );
+  }
+}
+
+.chrome-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  height: 18px;
+}
+
+.chrome-slider::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #a8afb8, #e2e6eb);
+}
+
+.chrome-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  margin-top: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(125, 165, 205, 0.6);
+  background: linear-gradient(135deg, #ffffff, #c2c8d0 55%, #a8afb8);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.chrome-slider:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid #bfdcf5;
+  outline-offset: 2px;
+}
+
+.chrome-slider::-moz-range-track {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #a8afb8, #e2e6eb);
+}
+
+.chrome-slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid rgba(125, 165, 205, 0.6);
+  background: linear-gradient(135deg, #ffffff, #c2c8d0 55%, #a8afb8);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
