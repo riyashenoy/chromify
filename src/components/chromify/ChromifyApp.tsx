@@ -7,7 +7,7 @@ import {
   useState,
   type DragEvent,
 } from "react";
-import { Chip, SectionTitle, Slider } from "./Controls";
+import { CheckField, Chip, ColorField, SectionTitle, Slider } from "./Controls";
 import { TextSourcePanel } from "./TextSourcePanel";
 import { SiteFooter, SiteHeader } from "@/components/shared/SiteChrome";
 import { DEFAULTS, PRESETS } from "@/lib/chrome/constants";
@@ -28,7 +28,6 @@ import {
 } from "@/lib/chrome/textCanvas";
 import type {
   ChromeParams,
-  MaskMode,
   PresetName,
   PreviewBg,
 } from "@/lib/chrome/types";
@@ -42,7 +41,6 @@ function paramsMatch(a: ChromeParams, b: ChromeParams): boolean {
 
 export default function ChromifyApp() {
   const [params, setParams] = useState<ChromeParams>(DEFAULTS);
-  const [maskMode, setMaskMode] = useState<MaskMode>("alpha");
   const [bg, setBg] = useState<PreviewBg>("dark");
   const [fileName, setFileName] = useState("demo-star");
   const [dragging, setDragging] = useState(false);
@@ -96,7 +94,7 @@ export default function ChromifyApp() {
       const ctx = disp.getContext("2d");
       if (!ctx) return;
       try {
-        const result = renderChrome(srcRef.current, PREVIEW_SIZE, params, maskMode);
+        const result = renderChrome(srcRef.current, PREVIEW_SIZE, params);
         ctx.clearRect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
         paintPreviewBackground(ctx, PREVIEW_SIZE, bg);
         ctx.drawImage(result, 0, 0);
@@ -108,7 +106,7 @@ export default function ChromifyApp() {
       cancelled = true;
       cancelAnimationFrame(frame);
     };
-  }, [params, maskMode, bg, srcVersion]);
+  }, [params, bg, srcVersion]);
 
   const exportPNG = async () => {
     if (!srcRef.current || busy) return;
@@ -117,7 +115,7 @@ export default function ChromifyApp() {
     setLoadError(null);
     try {
       await new Promise((r) => setTimeout(r, 20));
-      const result = renderChrome(srcRef.current, EXPORT_SIZE, params, maskMode);
+      const result = renderChrome(srcRef.current, EXPORT_SIZE, params);
       const blob = await canvasToPngBlob(result);
       downloadBlob(blob, `${fileName}-chrome.png`);
       setExportOk(true);
@@ -131,7 +129,6 @@ export default function ChromifyApp() {
 
   const resetDefaults = () => {
     setParams({ ...DEFAULTS });
-    setMaskMode("alpha");
   };
 
   const restoreDemo = () => {
@@ -147,7 +144,6 @@ export default function ChromifyApp() {
       const canvas = await makeTextCanvas(text, fontId);
       srcRef.current = canvas;
       setFileName(textFilenameSlug(text));
-      setMaskMode("alpha");
       setSrcVersion((v) => v + 1);
       setExportOk(false);
     } catch (err) {
@@ -405,15 +401,62 @@ export default function ChromifyApp() {
             format={(v) => `${v}°`}
           />
           <Slider
-            id="blueTint"
-            label="Ice-blue tint"
-            value={params.blueTint}
+            id="overallTint"
+            label="Tint strength"
+            value={params.overallTint}
             min={0}
-            max={0.6}
+            max={1}
             step={0.01}
-            onChange={setParam("blueTint")}
-            format={(v) => `${Math.round((v / 0.6) * 100)}%`}
+            onChange={setParam("overallTint")}
+            format={(v) => (v < 0.005 ? "off" : `${Math.round(v * 100)}%`)}
           />
+          <Slider
+            id="overallHue"
+            label="Tint color"
+            value={params.overallHue}
+            min={0}
+            max={360}
+            step={1}
+            onChange={setParam("overallHue")}
+            format={(v) => `${v}°`}
+            trackClassName="hue-track"
+          />
+
+          <SectionTitle>SHADOW GLOW</SectionTitle>
+          <Slider
+            id="tintStrength"
+            label="Glow strength"
+            value={params.tintStrength}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={setParam("tintStrength")}
+            format={(v) => (v < 0.005 ? "off" : `${Math.round(v * 100)}%`)}
+          />
+          <CheckField
+            id="tintGradient"
+            label="Two-color gradient"
+            checked={params.tintGradient}
+            onChange={(checked) =>
+              setParams((prev) => ({ ...prev, tintGradient: checked }))
+            }
+          />
+          <div className="mb-3.5 flex flex-wrap gap-2">
+            <ColorField
+              id="tintSky"
+              label={params.tintGradient ? "Top" : "Color"}
+              value={params.tintSky}
+              onChange={setParam("tintSky")}
+            />
+            {params.tintGradient && (
+              <ColorField
+                id="tintGround"
+                label="Bottom"
+                value={params.tintGround}
+                onChange={setParam("tintGround")}
+              />
+            )}
+          </div>
 
           <SectionTitle>SHADOW</SectionTitle>
           <Slider
@@ -445,29 +488,6 @@ export default function ChromifyApp() {
             onChange={setParam("shadowDist")}
           />
 
-          <SectionTitle>MASK</SectionTitle>
-          <div className="flex flex-wrap gap-2 pb-4" role="group" aria-label="Mask source">
-            {(
-              [
-                ["alpha", "Transparency"],
-                ["dark", "Dark pixels"],
-                ["light", "Light pixels"],
-              ] as const
-            ).map(([value, label]) => (
-              <Chip
-                key={value}
-                active={maskMode === value}
-                onClick={() => setMaskMode(value)}
-                aria-pressed={maskMode === value}
-              >
-                {label}
-              </Chip>
-            ))}
-          </div>
-          <p className="mb-3 text-[11px] leading-relaxed text-[#6c7480]">
-            Transparent PNGs and SVGs work best with Transparency. For a black
-            logo on white, switch to Dark pixels.
-          </p>
         </section>
       </main>
 

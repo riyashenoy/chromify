@@ -11,6 +11,8 @@ interface SliderProps {
   step: number;
   onChange: (value: number) => void;
   format?: (value: number) => string;
+  /** Extra class on the range input (e.g. hue-track for a rainbow track) */
+  trackClassName?: string;
 }
 
 export function Slider({
@@ -22,6 +24,7 @@ export function Slider({
   step,
   onChange,
   format,
+  trackClassName = "",
 }: SliderProps) {
   return (
     <label htmlFor={id} className="mb-3.5 block">
@@ -41,12 +44,72 @@ export function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="chrome-slider w-full cursor-pointer"
+        className={`chrome-slider w-full cursor-pointer ${trackClassName}`}
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={value}
         aria-label={label}
       />
+    </label>
+  );
+}
+
+interface CheckFieldProps {
+  id: string;
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}
+
+export function CheckField({ id, label, checked, onChange }: CheckFieldProps) {
+  return (
+    <label
+      htmlFor={id}
+      className="mb-3.5 flex w-fit cursor-pointer items-center gap-2.5"
+    >
+      <input
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="chrome-checkbox"
+      />
+      <span className="text-[11px] uppercase tracking-[0.08em] text-[#8b93a0]">
+        {label}
+      </span>
+    </label>
+  );
+}
+
+interface ColorFieldProps {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export function ColorField({ id, label, value, onChange }: ColorFieldProps) {
+  return (
+    <label
+      htmlFor={id}
+      className="flex flex-1 items-center justify-between gap-2 rounded-md border border-[rgba(150,157,166,0.3)] bg-[#14161b] px-3 py-2"
+    >
+      <span className="text-[11px] uppercase tracking-[0.08em] text-[#8b93a0]">
+        {label}
+      </span>
+      <span className="flex items-center gap-2">
+        <span className="font-variant-numeric tabular-nums text-[11px] text-[#bfdcf5]">
+          {value.toLowerCase()}
+        </span>
+        <input
+          id={id}
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="chrome-color-input"
+          aria-label={label}
+        />
+      </span>
     </label>
   );
 }

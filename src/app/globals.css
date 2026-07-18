@@ -44,7 +44,7 @@
       #e2e6eb 100%
     );
     background-size: 200% 100%;
-    animation: chrome-sweep 6s linear infinite;
+    animation: chrome-sweep 4.5s linear infinite;
   }
 
   @keyframes chrome-sweep {
@@ -97,11 +97,47 @@
   }
 }
 
+.chrome-color-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(150, 157, 166, 0.45);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.chrome-color-input::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.chrome-color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 5px;
+}
+
+.chrome-color-input::-moz-color-swatch {
+  border: none;
+  border-radius: 5px;
+}
+
+.chrome-color-input:focus-visible {
+  outline: 2px solid #bfdcf5;
+  outline-offset: 2px;
+}
+
 .chrome-slider {
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
   height: 18px;
+  cursor: grab;
+}
+
+.chrome-slider:active {
+  cursor: grabbing;
 }
 
 .chrome-slider::-webkit-slider-runnable-track {
@@ -120,6 +156,24 @@
   border: 1px solid rgba(125, 165, 205, 0.6);
   background: linear-gradient(135deg, #ffffff, #c2c8d0 55%, #a8afb8);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.chrome-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.25);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.55),
+    0 0 0 4px rgba(191, 220, 245, 0.18);
+}
+
+.chrome-slider:active::-webkit-slider-thumb {
+  transform: scale(1.4);
+  border-color: rgba(191, 220, 245, 0.9);
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.6),
+    0 0 0 6px rgba(191, 220, 245, 0.26);
 }
 
 .chrome-slider:focus-visible::-webkit-slider-thumb {
@@ -127,10 +181,77 @@
   outline-offset: 2px;
 }
 
+.chrome-slider.hue-track::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    90deg,
+    hsl(0, 90%, 58%) 0%,
+    hsl(60, 90%, 58%) 16.667%,
+    hsl(120, 90%, 58%) 33.333%,
+    hsl(180, 90%, 58%) 50%,
+    hsl(240, 90%, 58%) 66.667%,
+    hsl(300, 90%, 58%) 83.333%,
+    hsl(360, 90%, 58%) 100%
+  );
+}
+
 .chrome-slider::-moz-range-track {
   height: 3px;
   border-radius: 2px;
   background: linear-gradient(90deg, #a8afb8, #e2e6eb);
+}
+
+.chrome-slider.hue-track::-moz-range-track {
+  background: linear-gradient(
+    90deg,
+    hsl(0, 90%, 58%) 0%,
+    hsl(60, 90%, 58%) 16.667%,
+    hsl(120, 90%, 58%) 33.333%,
+    hsl(180, 90%, 58%) 50%,
+    hsl(240, 90%, 58%) 66.667%,
+    hsl(300, 90%, 58%) 83.333%,
+    hsl(360, 90%, 58%) 100%
+  );
+}
+
+.chrome-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(150, 157, 166, 0.45);
+  background: #14161b;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.chrome-checkbox:hover {
+  border-color: rgba(191, 220, 245, 0.6);
+}
+
+.chrome-checkbox::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  transform: scale(0);
+  transition: transform 0.12s ease;
+  background: linear-gradient(135deg, #ffffff, #bfdcf5 60%, #a8afb8);
+}
+
+.chrome-checkbox:checked {
+  border-color: rgba(191, 220, 245, 0.8);
+}
+
+.chrome-checkbox:checked::before {
+  transform: scale(1);
+}
+
+.chrome-checkbox:focus-visible {
+  outline: 2px solid #bfdcf5;
+  outline-offset: 2px;
 }
 
 .chrome-slider::-moz-range-thumb {
@@ -140,6 +261,24 @@
   border: 1px solid rgba(125, 165, 205, 0.6);
   background: linear-gradient(135deg, #ffffff, #c2c8d0 55%, #a8afb8);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.chrome-slider:hover::-moz-range-thumb {
+  transform: scale(1.25);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.55),
+    0 0 0 4px rgba(191, 220, 245, 0.18);
+}
+
+.chrome-slider:active::-moz-range-thumb {
+  transform: scale(1.4);
+  border-color: rgba(191, 220, 245, 0.9);
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.6),
+    0 0 0 6px rgba(191, 220, 245, 0.26);
 }
 
 @media (prefers-reduced-motion: reduce) {

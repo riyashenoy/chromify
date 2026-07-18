@@ -1,14 +1,52 @@
 import { boxBlur } from "./blur";
 import { buildBubbleHeight } from "./height";
-import { ICE, STAR_5PT } from "./constants";
+import { STAR_5PT } from "./constants";
 import { buildMask } from "./mask";
-import type { ChromeParams, MaskMode } from "./types";
+import type { ChromeParams } from "./types";
+
+/** "#rrggbb" → [r, g, b] in 0..1. Falls back to neutral silver. */
+function hexToRgb01(hex: string): [number, number, number] {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return [0.76, 0.78, 0.81];
+  const n = parseInt(m[1], 16);
+  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+}
+
+/** HSL → RGB in 0..1 (h in degrees). */
+function hslToRgb01(h: number, s: number, l: number): [number, number, number] {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const hp = (((h % 360) + 360) % 360) / 60;
+  const x = c * (1 - Math.abs((hp % 2) - 1));
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  if (hp < 1) [r, g, b] = [c, x, 0];
+  else if (hp < 2) [r, g, b] = [x, c, 0];
+  else if (hp < 3) [r, g, b] = [0, c, x];
+  else if (hp < 4) [r, g, b] = [0, x, c];
+  else if (hp < 5) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+  const m = l - c / 2;
+  return [r + m, g + m, b + m];
+}
+
+/** Push channels away from their mean to boost saturation, clamped to 0..1. */
+function boostSaturation(
+  c: [number, number, number],
+  f: number,
+): [number, number, number] {
+  const mean = (c[0] + c[1] + c[2]) / 3;
+  return [
+    Math.min(1, Math.max(0, mean + (c[0] - mean) * f)),
+    Math.min(1, Math.max(0, mean + (c[1] - mean) * f)),
+    Math.min(1, Math.max(0, mean + (c[2] - mean) * f)),
+  ];
+}
 
 export function renderChrome(
   srcCanvas: HTMLCanvasElement,
   size: number,
   p: ChromeParams,
-  maskMode: MaskMode,
 ): HTMLCanvasElement {
   const pad = Math.ceil(size * 0.12);
   const inner = size - pad * 2;
@@ -29,7 +67,7 @@ export function renderChrome(
   wctx.drawImage(srcCanvas, ox, oy, dw, dh);
   const imgData = wctx.getImageData(0, 0, size, size);
 
-  const mask = buildMask(imgData, maskMode);
+  const mask = buildMask(imgData, "alpha");
   const w = size;
   const h = size;
   const bevelR = Math.max(1, (p.bevel / 512) * size);
@@ -55,7 +93,20 @@ export function renderChrome(
   const depth = p.depth * (size / 512);
   const bands = 6;
 
+  const tintOn = p.tintStrength > 0.001;
+  const topC = boostSaturation(hexToRgb01(p.tintSky), 1.35);
+  const bottomC = p.tintGradient
+    ? boostSaturation(hexToRgb01(p.tintGround), 1.35)
+    : topC;
+  // Fully saturated tint color; overlay blending keeps highlights white.
+  const overallC = hslToRgb01(p.overallHue, 0.92, 0.58);
+
   for (let y = 0; y < h; y++) {
+    // Gradient position within the artwork's vertical extent (0 top, 1 bottom).
+    const gy = Math.min(1, Math.max(0, (y - oy) / Math.max(1, dh)));
+    const cr = topC[0] * (1 - gy) + bottomC[0] * gy;
+    const cg = topC[1] * (1 - gy) + bottomC[1] * gy;
+    const cb = topC[2] * (1 - gy) + bottomC[2] * gy;
     for (let x = 0; x < w; x++) {
       const i = y * w + x;
       const a = mask[i];
@@ -93,10 +144,50 @@ export function renderChrome(
       const ndl = nx * lx + ny * ly + nz * lz;
       const spec = ndl > 0 ? p.shine * 1.15 * Math.pow(ndl, 42) : 0;
 
-      const k = p.blueTint * (1 - base);
-      let r = base * (1 - k) + ICE[0] * base * k;
-      let g = base * (1 - k) + ICE[1] * base * k;
-      let b = base * (1 - k * 0.4) + ICE[2] * base * k;
+      let r = base;
+      let g = base;
+      let b = base;
+
+      // Colored shadows: the glow only touches the dark bands of the
+      // reflection. The mask ramps in below base ~0.55 and is squared so it
+      // concentrates in the deepest shading; mids and highlights stay pure
+      // silver. Shadow pixels are re-lit with the saturated glow color
+      // (kept luminous enough to read as colored light, not black glaze).
+      if (tintOn) {
+        // The shadow window widens as strength rises, so high values push
+        // color further up into the midtones instead of just saturating
+        // the same thin dark band.
+        const th = 0.55 + 0.2 * p.tintStrength;
+        const t = Math.max(0, (th - base) / th);
+        const kw = Math.min(0.98, p.tintStrength * 2.4 * t * t);
+        if (kw > 0.001) {
+          const glow = 0.32 + base * 1.5;
+          r = r * (1 - kw) + cr * glow * kw;
+          g = g * (1 - kw) + cg * glow * kw;
+          b = b * (1 - kw) + cb * glow * kw;
+        }
+      }
+
+      // Overall tint: overlay blend of the hue over the metal shading —
+      // saturated color in the midtones, whites and blacks preserved.
+      if (p.overallTint > 0.001) {
+        const k = p.overallTint;
+        const tr =
+          base < 0.5
+            ? 2 * base * overallC[0]
+            : 1 - 2 * (1 - base) * (1 - overallC[0]);
+        const tg =
+          base < 0.5
+            ? 2 * base * overallC[1]
+            : 1 - 2 * (1 - base) * (1 - overallC[1]);
+        const tb =
+          base < 0.5
+            ? 2 * base * overallC[2]
+            : 1 - 2 * (1 - base) * (1 - overallC[2]);
+        r = r * (1 - k) + tr * k;
+        g = g * (1 - k) + tg * k;
+        b = b * (1 - k) + tb * k;
+      }
       r += spec;
       g += spec;
       b += spec;

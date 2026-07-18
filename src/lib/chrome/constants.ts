@@ -1,6 +1,7 @@
 import type { ChromeParams, PresetName } from "./types";
 
-export const ICE = [0.749, 0.863, 0.961] as const;
+/** Hue of the classic ice-blue tint — the default for the overall tint. */
+export const ICE_HUE = 208;
 
 export const DEFAULTS: ChromeParams = {
   profile: "bevel",
@@ -10,7 +11,12 @@ export const DEFAULTS: ChromeParams = {
   banding: 0.35,
   shine: 0.65,
   lightAngle: -35,
-  blueTint: 0.18,
+  overallTint: 0.18,
+  overallHue: ICE_HUE,
+  tintStrength: 0,
+  tintSky: "#ff4dc4",
+  tintGround: "#4d9aff",
+  tintGradient: false,
   shadowOpacity: 0.45,
   shadowBlur: 14,
   shadowDist: 10,
@@ -25,17 +31,7 @@ export const PRESETS: Record<PresetName, ChromeParams> = {
     contrast: 0.95,
     banding: 0.12,
     shine: 0.9,
-    blueTint: 0.08,
-  },
-  Satin: {
-    ...DEFAULTS,
-    bevel: 11,
-    depth: 3,
-    contrast: 0.2,
-    banding: 0.08,
-    shine: 0.3,
-    blueTint: 0.28,
-    shadowOpacity: 0.3,
+    overallTint: 0.08,
   },
   Banded: {
     ...DEFAULTS,
@@ -53,7 +49,7 @@ export const PRESETS: Record<PresetName, ChromeParams> = {
     contrast: 0.6,
     banding: 0.1,
     shine: 0.85,
-    blueTint: 0.15,
+    overallTint: 0.15,
   },
 };
 
