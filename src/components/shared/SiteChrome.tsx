@@ -68,11 +68,11 @@ function ChromeStar({
 export function SiteFooter() {
   return (
     <footer className="border-t border-[rgba(150,157,166,0.14)] px-6 py-5 sm:px-8">
-      <p className="text-center text-[11px] tracking-[0.04em] text-[#6c7480]">
+      <p className="text-center text-[12px] tracking-[0.04em] text-[#9aa1ad]">
         Built by Riya Shenoy ·{" "}
         <a
           href="https://riyashenoy.com"
-          className="text-[#9aa1ad] underline-offset-2 transition-colors hover:text-[#dfe3e9] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bfdcf5]"
+          className="text-[#c6cdd6] underline-offset-2 transition-colors hover:text-white hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bfdcf5]"
           rel="noopener noreferrer"
         >
           riyashenoy.com
