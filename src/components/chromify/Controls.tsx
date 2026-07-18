@@ -54,7 +54,7 @@ export function Slider({
 export function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <div className="my-5 mb-3 flex items-center gap-2.5 first:mt-0">
-      <span className="font-display bg-chrome-wordmark bg-clip-text text-[10px] tracking-[0.22em] text-transparent">
+      <span className="font-display chrome-wordmark-animated bg-clip-text text-[10px] tracking-[0.22em] text-transparent">
         {children}
       </span>
       <span className="h-px flex-1 bg-[rgba(150,157,166,0.22)]" aria-hidden />

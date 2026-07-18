@@ -2,7 +2,7 @@
 
 @theme {
   --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-michroma), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-orbitron), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -30,15 +30,52 @@
     font-family: var(--font-display);
   }
 
-  .bg-chrome-wordmark {
+  /* Animated chrome text: gradient starts/ends on the same silver so the
+     sweeping reflection loops seamlessly. */
+  .chrome-wordmark-animated {
     background-image: linear-gradient(
-      115deg,
-      #ffffff 0%,
-      #e2e6eb 28%,
-      #fcfdff 46%,
-      #a8afb8 66%,
-      #eef1f5 88%
+      100deg,
+      #e2e6eb 0%,
+      #a8afb8 18%,
+      #fcfdff 38%,
+      #ffffff 50%,
+      #c2c8d0 64%,
+      #eef1f5 84%,
+      #e2e6eb 100%
     );
+    background-size: 200% 100%;
+    animation: chrome-sweep 6s linear infinite;
+  }
+
+  @keyframes chrome-sweep {
+    from {
+      background-position: 0% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Gentle twinkle for the header stars; the two sides run out of phase */
+  .chrome-star-twinkle {
+    animation: star-twinkle 3s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  .chrome-star-twinkle-delayed {
+    animation-delay: -1.5s;
+  }
+
+  @keyframes star-twinkle {
+    0%,
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(0.78) rotate(22deg);
+      opacity: 0.72;
+    }
   }
 
   /* Soft edge falloff — keeps the center bright without looking like a glow effect */

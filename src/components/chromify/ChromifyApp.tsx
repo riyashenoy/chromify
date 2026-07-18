@@ -209,7 +209,7 @@ export default function ChromifyApp() {
                 void exportPNG();
               }}
               disabled={busy}
-              className="absolute right-3 top-3 z-10 rounded-full border border-[rgba(125,165,205,0.55)] bg-[linear-gradient(115deg,#f5f7f9,#c2c8d0_40%,#ffffff_60%,#a8afb8)] px-4 py-2 font-sans text-[11px] font-medium tracking-[0.08em] text-[#14161b] shadow-[0_4px_16px_rgba(0,0,0,0.35)] transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bfdcf5] disabled:cursor-wait disabled:opacity-70"
+              className="absolute right-3 top-3 z-10 rounded-full border border-[rgba(125,165,205,0.55)] bg-[linear-gradient(115deg,#f5f7f9,#c2c8d0_40%,#ffffff_60%,#a8afb8)] px-4 py-2 font-sans text-[11px] font-medium tracking-[0.08em] text-[#14161b] shadow-[0_4px_16px_rgba(0,0,0,0.35)] transition-[transform,box-shadow,filter] duration-150 hover:-translate-y-0.5 hover:shadow-[0_6px_22px_rgba(0,0,0,0.45),0_0_0_3px_rgba(191,220,245,0.22)] hover:brightness-105 active:translate-y-0 active:shadow-[0_3px_10px_rgba(0,0,0,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bfdcf5] disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:brightness-100 disabled:hover:shadow-[0_4px_16px_rgba(0,0,0,0.35)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               aria-label={`Export ${fileName}-chrome.png`}
             >
               {busy ? "Rendering…" : exportOk ? "Downloaded" : "Export PNG"}
