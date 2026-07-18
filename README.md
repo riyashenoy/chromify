@@ -2,6 +2,9 @@
 
 ![Chromify banner](./readme%20images/chromify_banner.png)
 # Chromify
+
+**[Try Chromify now →](https://chromify-riyverie.vercel.app/)**
+
 Turn any PNG, SVG, or typed text into shiny sterling chrome, directly in your browser.
 
 Chromify is an interactive chrome-effect playground built entirely with React and the Canvas 2D API. You can upload a shape, type out some text, or use one of the built-in examples, then customize it with bevels, reflections, metallic banding, colorful rim lights, glows, and shadows.
