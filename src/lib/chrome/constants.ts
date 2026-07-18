@@ -4,11 +4,11 @@ import type { ChromeParams, PresetName } from "./types";
 export const ICE_HUE = 208;
 
 export const DEFAULTS: ChromeParams = {
-  profile: "bevel",
-  bevel: 8,
-  depth: 6,
-  contrast: 0.55,
-  banding: 0.35,
+  profile: "bubble",
+  bevel: 68.5,
+  depth: 16,
+  contrast: 1,
+  banding: 0.74,
   shine: 0.65,
   lightAngle: -35,
   overallTint: 0.18,
@@ -23,9 +23,17 @@ export const DEFAULTS: ChromeParams = {
 };
 
 export const PRESETS: Record<PresetName, ChromeParams> = {
-  Sterling: { ...DEFAULTS },
+  Sterling: {
+    ...DEFAULTS,
+    profile: "bevel",
+    bevel: 8,
+    depth: 6,
+    contrast: 0.55,
+    banding: 0.35,
+  },
   Mirror: {
     ...DEFAULTS,
+    profile: "bevel",
     bevel: 14,
     depth: 10,
     contrast: 0.95,
@@ -35,6 +43,7 @@ export const PRESETS: Record<PresetName, ChromeParams> = {
   },
   Banded: {
     ...DEFAULTS,
+    profile: "bevel",
     bevel: 9,
     depth: 8,
     contrast: 0.7,
