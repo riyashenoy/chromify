@@ -12,16 +12,27 @@ export function SiteHeader({
   return (
     <header className="border-b border-[rgba(150,157,166,0.18)] px-6 py-6 sm:px-8">
       <div className="flex flex-col items-center justify-center gap-2 text-center">
-        <div className="flex items-center gap-3.5 sm:gap-4">
-          <ChromeStar size={14} className="chrome-star-twinkle" gradientId="star-left" />
+        <div className="flex items-center gap-2.5 sm:gap-3">
           <h1 className="font-display chrome-wordmark-animated bg-clip-text text-[22px] font-semibold tracking-[0.18em] text-transparent sm:text-[26px]">
             {title}
           </h1>
-          <ChromeStar
-            size={14}
-            className="chrome-star-twinkle chrome-star-twinkle-delayed"
-            gradientId="star-right"
-          />
+          <span className="relative -top-0.5 -ml-1 inline-block h-[26px] w-[26px]" aria-hidden>
+            <ChromeStar
+              size={8}
+              className="chrome-star-twinkle chrome-star-twinkle-delayed absolute left-0 top-0"
+              gradientId="star-small"
+            />
+            <ChromeStar
+              size={14}
+              className="chrome-star-twinkle absolute right-0 top-1"
+              gradientId="star-large"
+            />
+            <ChromeStar
+              size={10}
+              className="chrome-star-twinkle chrome-star-twinkle-late absolute bottom-1 left-0"
+              gradientId="star-third"
+            />
+          </span>
         </div>
         {tagline ? (
           <p className="max-w-[28rem] text-xs tracking-[0.04em] text-[#8b93a0]">

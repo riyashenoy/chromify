@@ -66,6 +66,10 @@
     animation-delay: -1.5s;
   }
 
+  .chrome-star-twinkle-late {
+    animation-delay: -2.4s;
+  }
+
   @keyframes star-twinkle {
     0%,
     100% {
